@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - 2.2.1
+  - 2.1.5
+bundler_args: --jobs=2
+script: bundle exec rspec
+branches:
+  only:
+    - master
