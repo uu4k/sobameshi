@@ -1,0 +1,1 @@
+$("#favorite_form-<%= @post.id %>").html("<%= escape_javascript(render(partial: 'shared/favorite', locals:{ post: @post })) %>");

@@ -21,9 +21,10 @@
 
 en:
   hello: "Hello world"
-  micropost_created: "Micropost created!"
-  micropost_deleted: "Micropost deleted!"
-  micropost_deleted_confirm: "You sure!"
+  post_created: "Post created!"
+  post_updated: "Post updated!"
+  post_deleted: "Post deleted!"
+  post_deleted_confirm: "You sure!"
   user_created: "Welcome to the Sample App!"
   user_updated: "Setting updated!"
   errors:

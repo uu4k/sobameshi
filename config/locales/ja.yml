@@ -1,8 +1,9 @@
 ja:
   hello: "世界よこんにちわ"
-  micropost_created: "マイクロポストが無事投稿されました"
-  micropost_deleted: "マイクロポストが無事削除されました"
-  micropost_deleted_confirm: "削除してもよろしいですか？"
+  post_created: "ポストが無事投稿されました"
+  post_updated: "ポストが無事更新されました"
+  post_deleted: "ポストが無事削除されました"
+  post_deleted_confirm: "削除してもよろしいですか？"
   user_created: "サンプルアプリにようこそ!"
   user_updated: "設定の更新が完了しました"
   

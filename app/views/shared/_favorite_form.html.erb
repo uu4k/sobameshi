@@ -1,0 +1,9 @@
+<% if logged_in? %>
+  <div id="favorite_form-<%= post.id %>">
+  <% if current_user.favorite?(post) %>
+    <%= render partial: 'shared/unfavorite', locals: { post: post } %>
+  <% else %>
+    <%= render partial: 'shared/favorite', locals: { post: post } %>
+  <% end %>
+  </div>
+<% end %>

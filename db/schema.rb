@@ -11,7 +11,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150823074847) do
+ActiveRecord::Schema.define(version: 20150823113631) do
+
+  create_table "comments", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "post_id"
+    t.string   "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "comments", ["post_id", "created_at"], name: "index_comments_on_post_id_and_created_at"
+  add_index "comments", ["post_id"], name: "index_comments_on_post_id"
+  add_index "comments", ["user_id", "created_at"], name: "index_comments_on_user_id_and_created_at"
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id"
+
+  create_table "favorites", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "post_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "favorites", ["post_id"], name: "index_favorites_on_post_id"
+  add_index "favorites", ["user_id", "post_id"], name: "index_favorites_on_user_id_and_post_id", unique: true
+  add_index "favorites", ["user_id"], name: "index_favorites_on_user_id"
+
+  create_table "posts", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "store_id"
+    t.string   "content"
+    t.decimal  "latitude",   precision: 9, scale: 6
+    t.decimal  "longitude",  precision: 9, scale: 6
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "posts", ["latitude", "longitude"], name: "index_posts_on_latitude_and_longitude"
+  add_index "posts", ["store_id", "created_at"], name: "index_posts_on_store_id_and_created_at"
+  add_index "posts", ["store_id"], name: "index_posts_on_store_id"
+  add_index "posts", ["user_id", "created_at"], name: "index_posts_on_user_id_and_created_at"
+  add_index "posts", ["user_id"], name: "index_posts_on_user_id"
 
   create_table "relationships", force: :cascade do |t|
     t.integer  "follower_id"
@@ -23,6 +63,16 @@ ActiveRecord::Schema.define(version: 20150823074847) do
   add_index "relationships", ["followed_id"], name: "index_relationships_on_followed_id"
   add_index "relationships", ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
   add_index "relationships", ["follower_id"], name: "index_relationships_on_follower_id"
+
+  create_table "stores", force: :cascade do |t|
+    t.string   "name"
+    t.decimal  "latitude",   precision: 9, scale: 6
+    t.decimal  "longitude",  precision: 9, scale: 6
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
+
+  add_index "stores", ["latitude", "longitude"], name: "index_stores_on_latitude_and_longitude"
 
   create_table "users", force: :cascade do |t|
     t.string   "name"

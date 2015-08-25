@@ -7,13 +7,16 @@ class User < ActiveRecord::Base
                     uniqueness: { case_sensitive: false }
   has_secure_password
   
-  has_many :microposts
+  has_many :posts
   
   has_many :following_relationships, class_name: "Relationship", foreign_key: "follower_id", dependent: :destroy
   has_many :following_users, through: :following_relationships, source: :followed
   
   has_many :follower_relationships, class_name: "Relationship", foreign_key: "followed_id", dependent: :destroy
   has_many :follower_users, through: :follower_relationships, source: :follower
+  
+  has_many :favorites
+  has_many :favorite_posts, class_name: "Post", through: :favorites, source: :post 
   
   def follow(other_user)
     following_relationships.create(followed_id: other_user.id)
@@ -23,5 +26,14 @@ class User < ActiveRecord::Base
   end
   def following?(other_user)
     following_users.include?(other_user)
+  end
+  def favorite(post)
+    favorites.create(post_id: post.id)
+  end
+  def unfavorite(post)
+    favorites.find_by(post_id: post.id).destroy
+  end
+  def favorite?(post)
+    favorite_posts.include?(post)
   end
 end
