@@ -2,6 +2,7 @@ class Post < ActiveRecord::Base
   paginates_per 20
   belongs_to :user
   belongs_to :store
+  accepts_nested_attributes_for :store
   
   validates :user_id, presence: true
   # validates :store_id, presence: true

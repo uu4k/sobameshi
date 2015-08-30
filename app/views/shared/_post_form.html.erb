@@ -1,9 +1,19 @@
 <%= form_for(post) do |f| %>
   <%= render 'shared/error_messages', object: f.object %>
   <div class="field">
-    <%= f.text_area :content, placeholder: "Compose new post..." %>
+    <%= f.text_area :content, placeholder: "何食べた？美味しかった？" %>
     <%= f.hidden_field :latitude %>
     <%= f.hidden_field :longitude %>
+    <%= f.hidden_field :address %>
+    <%= f.hidden_field :place_id %>
+    <div id="map" style="height: 300px;"></div>
+    <%= f.fields_for :store do |sf| %>
+      <%= sf.text_field :name, placeholder: "お店を選択してください。（見つからない場合は手入力できます）" %>
+      <%= sf.hidden_field :latitude %>
+      <%= sf.hidden_field :longitude %>
+      <%= sf.hidden_field :address %>
+      <%= sf.hidden_field :place_id %>
+    <% end %>
   </div>
   <%= f.submit "Post", class: "btn btn-primary" %>
 <% end %>
