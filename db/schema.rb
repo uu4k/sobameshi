@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150823113631) do
+ActiveRecord::Schema.define(version: 20150829020711) do
 
   create_table "comments", force: :cascade do |t|
     t.integer  "user_id"
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 20150823113631) do
     t.decimal  "longitude",  precision: 9, scale: 6
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.string   "address"
+    t.string   "place_id"
   end
 
   add_index "posts", ["latitude", "longitude"], name: "index_posts_on_latitude_and_longitude"
@@ -70,6 +72,8 @@ ActiveRecord::Schema.define(version: 20150823113631) do
     t.decimal  "longitude",  precision: 9, scale: 6
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
+    t.string   "address"
+    t.string   "place_id"
   end
 
   add_index "stores", ["latitude", "longitude"], name: "index_stores_on_latitude_and_longitude"

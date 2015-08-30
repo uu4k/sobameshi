@@ -4,8 +4,10 @@
     <title>SobaMeshi</title>
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_include_tag 'application' %>
-    <%= javascript_include_tag "//maps.googleapis.com/maps/api/js?key=AIzaSyB4IByuRTARb1Yk4uGFVLCHEi2ANOcJxTM&sensor=true" %>
+    <%# javascript_include_tag "//maps.googleapis.com/maps/api/js?key=AIzaSyB4IByuRTARb1Yk4uGFVLCHEi2ANOcJxTM&language=ja&callback=initMap", async:true, defer:true %>
+    <%= javascript_include_tag "//maps.googleapis.com/maps/api/js?key=AIzaSyB4IByuRTARb1Yk4uGFVLCHEi2ANOcJxTM&language=ja&libraries=places&callback=initMap", async:true, defer:true %>
     <%= csrf_meta_tags %>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
   </head>
   <body>
     <%= render 'layouts/header' %>

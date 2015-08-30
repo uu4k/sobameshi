@@ -1,8 +1,111 @@
-$(function() {
+var map;
+var service;
+var infowindow;
+
+function initMap() {
     navigator.geolocation.getCurrentPosition(
         function(position){
-            $('#post_latitude').attr('value',position.coords.latitude);
-            $('#post_longitude').attr('value',position.coords.longitude);
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            var pyrmont = new google.maps.LatLng(lat,lng);
+            
+            $('#post_latitude').attr('value',lat);
+            $('#post_longitude').attr('value',lng);
+            
+            detectBrowser();
+            map = new google.maps.Map($('#map').get(0), {
+                center: pyrmont,
+                zoom: 18
+            });
+            
+            // var marker = new google.maps.Marker({
+            //     position: {lat:lat, lng:lng},
+            //     map: map,
+            //     title: 'Click to zoom'
+            // });
+            
+            // marker.addListener('click', function() {
+            //     map.setZoom(20);
+            //     map.setCenter(marker.getPosition());
+            // });
+            
+            var geocoder = new google.maps.Geocoder;
+            infowindow = new google.maps.InfoWindow;
+            
+            var latlng = {lat: lat, lng: lng};
+            geocoder.geocode({'location': latlng}, function(results,status) {
+                if(status === google.maps.GeocoderStatus.OK) {
+                    if(results[1]) {
+                        map.setZoom(16);
+                        var marker = new google.maps.Marker({
+                            position: latlng,
+                            map: map
+                        });
+                        // infowindow.setContent(results[1].formatted_address);
+                        // infowindow.open(map,marker);
+                        
+                        $('#post_address').attr('value',results[1].formatted_address);
+                        $('#post_place_id').attr('value',results[1].place_id);
+                    } else {
+                        window.alert('No results found');
+                    }
+                } else {
+                    window.alert('Geocoder failed due to: ' + status);
+                }
+            });
+            
+            var request = {
+                location: pyrmont,
+                radius: '500',
+                types: ['food','bakery','grocery_or_supermarket','cafe','restaurant','shopping_mall','convenience_store','bar','store','meal_takeaway','department_store']
+            };
+            
+            service = new google.maps.places.PlacesService(map);
+            service.nearbySearch(request, callback);
         }
-    )
-});
+    );
+}
+function detectBrowser() {
+  var useragent = navigator.userAgent;
+  var mapdiv = document.getElementById("map");
+
+  if (useragent.indexOf('iPhone') != -1 || useragent.indexOf('Android') != -1 ) {
+    mapdiv.style.width = '100%';
+    mapdiv.style.height = '100%';
+  } else {
+    // mapdiv.style.width = '600px';
+    mapdiv.style.height = '300px';
+  }
+}
+
+function callback(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      var place = results[i];
+      createMarker(results[i]);
+    }
+  }
+}
+
+function createMarker(place) {
+  var placeLoc = place.geometry.location;
+  var marker = new google.maps.Marker({
+    map: map,
+    position: place.geometry.location
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(place.name);
+    infowindow.open(map, this);
+    
+    $('#post_store_attributes_name').attr('value',place.name);
+    $('#post_store_attributes_place_id').attr('value',place.place_id);
+    $('#post_store_attributes_latitude').attr('value',place.geometry.location.lat());
+    $('#post_store_attributes_longitude').attr('value',place.geometry.location.lng());
+    service.getDetails({placeId: place.place_id}, function(place, status) {
+      if(status == google.maps.places.PlacesServiceStatus.OK) {
+        $('#post_store_attributes_address').attr('value',place.formatted_address);
+      }
+    }); 
+  });
+}
