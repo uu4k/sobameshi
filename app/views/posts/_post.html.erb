@@ -2,6 +2,10 @@
   <%= link_to gravatar_for(post.user, size: 50), post.user %>
   <span class="user"><%= link_to post.user.name, post.user %></span>
   <span class="content"><%= post.content %></span>
+  <% if post.image? %>
+  <span class="image"><%= image_tag post.image.thumb.url %></span>
+  <% end %>
+  <span class="address"><%= post.address %></span>
   <span class="timestamp">
     Posted <%= time_ago_in_words(post.created_at) %> ago.
     <% if current_user == post.user %>

@@ -14,6 +14,9 @@
       <%= sf.hidden_field :address %>
       <%= sf.hidden_field :place_id %>
     <% end %>
+    <%= image_tag post.image.thumb.url if post.image? %>
+    <%= f.file_field :image %>
+    <%= f.hidden_field :image_cache %>
   </div>
   <%= f.submit "Post", class: "btn btn-primary" %>
 <% end %>
