@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150829020711) do
+ActiveRecord::Schema.define(version: 20150901124028) do
 
   create_table "comments", force: :cascade do |t|
     t.integer  "user_id"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20150829020711) do
     t.datetime "updated_at",                         null: false
     t.string   "address"
     t.string   "place_id"
+    t.string   "image"
   end
 
   add_index "posts", ["latitude", "longitude"], name: "index_posts_on_latitude_and_longitude"

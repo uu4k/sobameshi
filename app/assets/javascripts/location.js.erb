@@ -62,8 +62,10 @@ function initMap() {
             
             service = new google.maps.places.PlacesService(map);
             service.nearbySearch(request, callback);
-        }
-    );
+        },
+        function(err){
+           console.warn('ERROR(' + err.code + '): ' + err.message); 
+        });
 }
 function detectBrowser() {
   var useragent = navigator.userAgent;
