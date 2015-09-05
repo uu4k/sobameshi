@@ -1,3 +1,15 @@
+<% content_for :js do %>
+  <%= javascript_tag do %>
+    navigator.geolocation.getCurrentPosition(
+      function(position){
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        $.getScript("<%= feed_path("Here")%>" + "?latitude=" + lat + "&longitude=" + lng,function(){});
+      }
+    );
+  <% end %>
+<% end if @type == "Here" %>
+
 <% if logged_in? %>
   <div class="row">
     <aside class="col-md-4">
@@ -5,6 +17,18 @@
         <%= render partial:'shared/user_info', locals: {user: current_user} %>
       </section>
     </aside>
+    <div class="col-md-4">
+      <div class="btn-group btn-group-justified" role="group">
+        <a href="<%=feed_path("Here")%>" class="btn btn-default <%= "active" if @type == "Here" %>" role="button"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span><br>Here</a>
+        <a href="<%=feed_path("Friends")%>" class="btn btn-default <%= "active" if @type == "Friends" %>" role="button"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span><br>Friends</a>
+        <a href="<%=feed_path("All")%>" class="btn btn-default <%= "active" if @type == "All" %>" role="button"><span class="glyphicon glyphicon-globe" aria-hidden="true"></span><br>All</a>
+      </div>
+      <h3>Post Feed</h3>
+      <div id="feed_items">
+        <%# javascript_include_tag feed_path("All"), acync: 'acync' %>
+      <%= render 'shared/feed', feed_items: @feed_items  %>
+      </div>
+    </div>
   </div>
 <% else %>
   <div class="center jumbotron">

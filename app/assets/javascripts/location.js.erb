@@ -2,7 +2,7 @@ var map;
 var service;
 var infowindow;
 
-function initMap() {
+function initEditPage() {
     navigator.geolocation.getCurrentPosition(
         function(position){
             var lat = position.coords.latitude;
@@ -67,6 +67,7 @@ function initMap() {
            console.warn('ERROR(' + err.code + '): ' + err.message); 
         });
 }
+
 function detectBrowser() {
   var useragent = navigator.userAgent;
   var mapdiv = document.getElementById("map");
