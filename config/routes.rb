@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   get 'favorites/destroy'
 
   root to: 'static_pages#home'
+  get 'feed/:type', to: 'static_pages#home', :as => :feed
   
   get 'signup', to: 'users#new'
   get 'login' => 'sessions#new'

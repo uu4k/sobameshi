@@ -1,5 +1,5 @@
 class Post < ActiveRecord::Base
-  paginates_per 20
+  paginates_per 10
   belongs_to :user
   belongs_to :store
   accepts_nested_attributes_for :store, reject_if: proc { |attributes| attributes['name'].blank? }
@@ -12,4 +12,16 @@ class Post < ActiveRecord::Base
   has_many :comments
 
   mount_uploader :image, ImageUploader
+  
+  def self.location_items(lat,lng)
+    metrePerLat = 111263.283 # 緯度1度辺りの距離m
+    metrePerLng = 25.3219892 # 経度1度辺りの距離m(東京) # TODO 経度により調整
+    latMargin = 1000 / metrePerLat
+    lngMargin = 1000 / metrePerLng
+    maxlat = lat.to_f + latMargin
+    minlat = lat.to_f - latMargin
+    maxlng = lng.to_f + lngMargin 
+    minlng = lng.to_f - lngMargin
+    Post.where(latitude: minlat..maxlat, longitude: minlng..maxlng)
+  end
 end
