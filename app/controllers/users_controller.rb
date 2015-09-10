@@ -1,7 +1,9 @@
 class UsersController < ApplicationController
   before_action :correct_user, only: [:edit,:update]
   def show
+    @feed_items = []
     @user = User.find(params[:id])
+    @feed_items = @user.feed_items.order(created_at: :desc).page(params[:page]) if @user
   end
 
   def new

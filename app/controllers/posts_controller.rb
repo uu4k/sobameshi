@@ -2,6 +2,7 @@ class PostsController < ApplicationController
   before_action :logged_in_user
   
   def new
+    @type = "New"
     @post = Post.new
     @post.build_store
   end
@@ -18,6 +19,7 @@ class PostsController < ApplicationController
   end
   
   def create
+    @type = "New"
     @post = current_user.posts.build(post_params)
     if @post.save
       flash[:success] = t(:post_created)

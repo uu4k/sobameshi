@@ -1,7 +1,16 @@
 <div class="row">
-  <aside class="col-md-4">
+  <aside class="col-md-12">
     <section class="user_info">
       <%= render partial:'shared/user_info', locals: {user: @user} %>
     </section>
+    <%= render partial: 'follow_form', locals: { user: @user } if logged_in? %>
   </aside>
+</div>
+<div>
+  <div class="col-md-12">
+    <h3>Post Feed</h3>
+    <div id="feed_items">
+    <%= render 'shared/feed', feed_items: @feed_items  %>
+    </div>
+  </div>
 </div>

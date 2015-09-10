@@ -11,6 +11,8 @@ class StaticPagesController < ApplicationController
     when "Friends" then
       if logged_in?
         @feed_items = current_user.feed_items.order(created_at: :desc).page(params[:page])
+      else
+        return logged_in_user
       end
     when "All" then
       @feed_items = Post.order(created_at: :desc).page(params[:page])
