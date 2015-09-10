@@ -68,6 +68,10 @@ p {
   text-decoration: none;
 }
 
+.navbuttons {
+  margin-bottom: 8px;
+}
+
 /* mixins, variables, etc. */
 
 $gray-medium-light: #eaeaea;
@@ -142,7 +146,7 @@ aside {
   margin-top: 15px;
 }
 
-/* microposts */
+/* posts */
 
 .posts {
   list-style: none;
