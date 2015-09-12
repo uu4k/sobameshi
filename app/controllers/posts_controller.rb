@@ -21,7 +21,7 @@ class PostsController < ApplicationController
   def create
     @type = "New"
     @post = current_user.posts.build(post_params)
-    if store_id = params[:post][:store_attributes][:id] 
+    if store_id = params[:post][:store_attributes][:id] && !store_id.nil?
       store = Store.find(store_id)
       @post.store = store
     end
