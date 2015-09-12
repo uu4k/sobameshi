@@ -221,8 +221,15 @@ span.picture {
 }
 
 /* extend bootstrap */
-.navbar-inverse-custom {
-  @extend .navbar !optional;
+.navbar-custom {
+  @extend .navbar-default !optional;
+  // background-color: #DC493A;
+  .navbar-brand {
+    // color: #E7F0FF;
+  }
+  .navbar-nav > li > a{
+    // color: #E7F0FF;
+  }
 }
 
 
