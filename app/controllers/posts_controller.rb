@@ -21,6 +21,10 @@ class PostsController < ApplicationController
   def create
     @type = "New"
     @post = current_user.posts.build(post_params)
+    if store_id = params[:post][:store_attributes][:id] 
+      store = Store.find(store_id)
+      @post.store = store
+    end
     if @post.save
       flash[:success] = t(:post_created)
       redirect_to root_url
