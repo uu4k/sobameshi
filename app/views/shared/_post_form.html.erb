@@ -6,8 +6,12 @@
     <%= f.hidden_field :longitude %>
     <%= f.hidden_field :address %>
     <%= f.hidden_field :place_id %>
-    <div id="map" style="height: 300px;"></div>
+    <div id="map">
+      <img class='loading' src='/img/common/loading.gif'>
+      現在地付近の店舗情報を読み込んでいます。
+    </div>
     <%= f.fields_for :store do |sf| %>
+      <%= sf.hidden_field :id %>
       <%= sf.text_field :name, placeholder: "お店を選択してください。（見つからない場合は手入力できます）" %>
       <%= sf.hidden_field :latitude %>
       <%= sf.hidden_field :longitude %>

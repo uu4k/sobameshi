@@ -1,6 +1,7 @@
 var map;
 var service;
 var infowindow;
+var currentMarker;
 
 function initEditPage() {
     navigator.geolocation.getCurrentPosition(
@@ -18,20 +19,40 @@ function initEditPage() {
                 zoom: 18
             });
             
-            // var marker = new google.maps.Marker({
-            //     position: {lat:lat, lng:lng},
-            //     map: map,
-            //     title: 'Click to zoom'
-            // });
+            map.addListener('click', function(e){
+              $('#post_store_attributes_name').attr('value',"");
+              $('#post_store_attributes_latitude').attr('value',e.latLng.lat());
+              $('#post_store_attributes_longitude').attr('value',e.latLng.lng());
+              if(currentMarker != null) {
+                currentMarker.setMap(null);
+              }
+              currentMarker = new google.maps.Marker({
+                position: e.latLng,
+                map: map,
+                icon: "/img/map/icons/green-dot.png"
+              });
+              var geocoder = new google.maps.Geocoder();
+              geocoder.geocode({
+                latLng: e.latLng
+              },function(results,status){
+                if (status == google.maps.GeocoderStatus.OK) {
+                  if (results[0].geometry) {
+                      var place = results[0]
+                      $('#post_store_attributes_address').attr('value',place.formatted_address);
+                      $('#post_store_attributes_place_id').attr('value',place.place_id);
+                  }
+                }
+              });
+              infowindow.setContent("この場所のお店の名前を入力してください。");
+              infowindow.open(map, currentMarker);
+            });
             
-            // marker.addListener('click', function() {
-            //     map.setZoom(20);
-            //     map.setCenter(marker.getPosition());
-            // });
+            // TODO 再読み込み時に手動マーカー復元
             
             var geocoder = new google.maps.Geocoder;
             infowindow = new google.maps.InfoWindow;
             
+            // 現在地マーカー表示
             var latlng = {lat: lat, lng: lng};
             geocoder.geocode({'location': latlng}, function(results,status) {
                 if(status === google.maps.GeocoderStatus.OK) {
@@ -39,10 +60,14 @@ function initEditPage() {
                         map.setZoom(16);
                         var marker = new google.maps.Marker({
                             position: latlng,
-                            map: map
+                            map: map,
+                            title: "現在地",
+                            icon: "/img/map/icons/blue-dot.png"
                         });
-                        // infowindow.setContent(results[1].formatted_address);
-                        // infowindow.open(map,marker);
+                        google.maps.event.addListener(marker, 'click', function() {
+                          infowindow.setContent("現在地");
+                          infowindow.open(map, this);
+                        });
                         
                         $('#post_address').attr('value',results[1].formatted_address);
                         $('#post_place_id').attr('value',results[1].place_id);
@@ -57,11 +82,26 @@ function initEditPage() {
             var request = {
                 location: pyrmont,
                 radius: '500',
-                types: ['food','bakery','grocery_or_supermarket','cafe','restaurant','shopping_mall','convenience_store','bar','store','meal_takeaway','department_store']
+                // types: ['food','bakery','grocery_or_supermarket','cafe','restaurant','shopping_mall','convenience_store','bar','store','meal_takeaway','department_store']
+                types: ['bakery','cafe','restaurant','bar','meal_takeaway']
             };
             
             service = new google.maps.places.PlacesService(map);
-            service.nearbySearch(request, callback);
+            service.radarSearch(request, createNearbyMarker);
+            
+            // APIでstore情報を取得
+            $.ajax({
+              type: 'GET',
+              url: '/stores/list',
+              data: {latitude:lat,longitude:lng},
+              dataType: 'json',
+              success: function(json) {
+                for(var i = 0; i < json.length; i++) {
+                  createMarkerByStore(json[i]);
+                }
+              }
+            })
+            
         },
         function(err){
            console.warn('ERROR(' + err.code + '): ' + err.message); 
@@ -85,7 +125,7 @@ function detectBrowser() {
   }
 }
 
-function callback(results, status) {
+function createNearbyMarker(results, status) {
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
       var place = results[i];
@@ -95,24 +135,53 @@ function callback(results, status) {
 }
 
 function createMarker(place) {
-  var placeLoc = place.geometry.location;
+  // var placeLoc = place.geometry.location;
   var marker = new google.maps.Marker({
     map: map,
-    position: place.geometry.location
+    position: place.geometry.location,
+    icon: "/img/map/icons/red-dot.png"
   });
 
   google.maps.event.addListener(marker, 'click', function() {
-    infowindow.setContent(place.name);
-    infowindow.open(map, this);
-    
-    $('#post_store_attributes_name').attr('value',place.name);
-    $('#post_store_attributes_place_id').attr('value',place.place_id);
-    $('#post_store_attributes_latitude').attr('value',place.geometry.location.lat());
-    $('#post_store_attributes_longitude').attr('value',place.geometry.location.lng());
+    if(currentMarker != null) {
+      currentMarker.setMap(null);
+    }
+              
     service.getDetails({placeId: place.place_id}, function(place, status) {
       if(status == google.maps.places.PlacesServiceStatus.OK) {
+        infowindow.setContent(place.name);
+        infowindow.open(map, marker);
+    
+        $('#post_store_attributes_name').attr('value',place.name);
+        $('#post_store_attributes_place_id').attr('value',place.place_id);
+        $('#post_store_attributes_latitude').attr('value',place.geometry.location.lat());
+        $('#post_store_attributes_longitude').attr('value',place.geometry.location.lng());
         $('#post_store_attributes_address').attr('value',place.formatted_address);
       }
     }); 
+  });
+}
+
+function createMarkerByStore(store) {
+  var marker = new google.maps.Marker({
+    map: map,
+    position: {lat: parseFloat(store.latitude),lng: parseFloat(store.longitude) },
+    icon: "/img/map/icons/red-dot.png"
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    if(currentMarker != null) {
+      currentMarker.setMap(null);
+    }
+              
+    infowindow.setContent(store.name);
+    infowindow.open(map, marker);
+
+    $('#post_store_attributes_id').attr('value',store.id);
+    $('#post_store_attributes_name').attr('value',store.name);
+    $('#post_store_attributes_place_id').attr('value',store.place_id);
+    $('#post_store_attributes_latitude').attr('value',store.latitude);
+    $('#post_store_attributes_longitude').attr('value',store.longitude);
+    $('#post_store_attributes_address').attr('value',store.address);
   });
 }

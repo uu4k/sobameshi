@@ -1,5 +1,8 @@
 <% content_for :js do %>
   <%= javascript_tag do %>
+    $(function(){
+      $("#feed_items").html("<img class='loading' src='/img/common/loading.gif'>現在地付近のPostを取得しています");
+    });
     navigator.geolocation.getCurrentPosition(
       function(position){
         var lat = position.coords.latitude;
@@ -7,7 +10,8 @@
         $.getScript("<%= feed_path("Here")%>" + "?latitude=" + lat + "&longitude=" + lng,function(){});
       },
       function(err){
-       console.warn('ERROR(' + err.code + '): ' + err.message); 
+        console.warn('ERROR(' + err.code + '): ' + err.message); 
+        $("#feed_items").html("現在地付近のPostを取得に失敗しました");
       }
     );
   <% end %>
@@ -16,7 +20,9 @@
   <div class="row">
 <% if !logged_in? %>
     <div class="center jumbotron">
-      <h1>Welcome to the SOBAMESHI</h1>
+      <h1>
+        あなたのそばのめし体験を共有しよう！<br />SOBAMESHIへようこそ！
+      </h1>
       <%= link_to "Sign up now!", signup_path, class: "btn btn-lg btn-primary" %>
     </div>
 <% else %>
